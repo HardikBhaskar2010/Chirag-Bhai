@@ -10,7 +10,7 @@ const subtitles = [
   "Party mode: activated 🎂",
 ];
 
-const audioSrc = "https://youtu.be/5u4xTa3LR2U?si=RaYdTfUaQ9090pB5";
+const audioSrc = "https://customer-assets.emergentagent.com/job_birthday-surprise-205/artifacts/jg47gc1p_happy-birthday-song.mp3";
 
 export const HeroSection = ({
   onTriggerConfetti,
@@ -20,6 +20,8 @@ export const HeroSection = ({
   onSettingsChange,
   prefersReducedMotion,
   onNavigate,
+  showCake,
+  onShowCake,
 }) => {
   const [subtitleIndex, setSubtitleIndex] = useState(0);
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
@@ -27,6 +29,7 @@ export const HeroSection = ({
   const audioRef = useRef(null);
   const [isLongPress, setIsLongPress] = useState(false);
   const longPressTimeout = useRef(null);
+  const [hasUserInteracted, setHasUserInteracted] = useState(false);
 
   useEffect(() => {
     if (prefersReducedMotion) return;
@@ -42,10 +45,34 @@ export const HeroSection = ({
     }
   }, [volume]);
 
+  // Auto-play music on mount
+  useEffect(() => {
+    if (!settings.musicEnabled) return;
+    
+    const attemptAutoPlay = async () => {
+      const audio = audioRef.current;
+      if (!audio) return;
+      
+      try {
+        await audio.play();
+        setIsAudioPlaying(true);
+        setHasUserInteracted(true);
+      } catch (error) {
+        // Browser blocked auto-play, will need user interaction
+        console.log("Auto-play blocked by browser. User interaction needed.");
+      }
+    };
+
+    // Try to auto-play after a short delay
+    const timer = setTimeout(attemptAutoPlay, 500);
+    return () => clearTimeout(timer);
+  }, [settings.musicEnabled]);
+
   const toggleAudio = () => {
     if (!settings.musicEnabled) return;
     const audio = audioRef.current;
     if (!audio) return;
+    setHasUserInteracted(true);
     if (audio.paused) {
       audio
         .play()
@@ -147,7 +174,11 @@ export const HeroSection = ({
                 type="button"
                 variant="primaryHero"
                 size="lg"
-                onClick={onTriggerConfetti}
+                onClick={() => {
+                  setHasUserInteracted(true);
+                  if (onShowCake) onShowCake();
+                }}
+                data-testid="celebrate-sequence-btn"
               >
                 <span className="relative flex items-center gap-2">
                   <span className="inline-block h-2 w-2 rounded-full bg-accent shadow-glow-secondary" aria-hidden="true" />
@@ -185,9 +216,17 @@ export const HeroSection = ({
               <audio
                 ref={audioRef}
                 src={audioSrc}
-                preload="none"
-                aria-label="Birthday soundtrack for Chirag (external stream)"
+                preload="auto"
+                loop
+                aria-label="Birthday soundtrack for Chirag"
               />
+              
+              {/* Auto-play prompt if blocked */}
+              {!hasUserInteracted && settings.musicEnabled && (
+                <div className="mt-4 text-xs text-muted-foreground animate-pulse">
+                  🎵 Click anywhere to enable music
+                </div>
+              )}
             </div>
           </div>
 

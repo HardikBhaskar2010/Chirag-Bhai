@@ -20,42 +20,36 @@ export const HomePage = (props) => {
 };
 
 export const GalleryPage = ({ settings }) => {
-  const { galleryImages } = require("@/components/birthday/ImageGallery");
-  
   return (
     <section className="relative mx-auto flex w-full max-w-5xl flex-col gap-8 px-4 pb-20 pt-10 sm:px-6 lg:px-10">
       <header className="space-y-2">
         <p className="text-xs uppercase tracking-[0.18em] text-secondary">Gallery · Party memory slots</p>
         <h1 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
-          Visual logbook for Chirags Level 16
+          Visual logbook for Chirags Level 16
         </h1>
         <p className="max-w-2xl text-sm text-muted-foreground">
-          Edit image URLs in <code className="rounded bg-muted/60 px-1 py-0.5 text-xs">/components/birthday/ImageGallery.jsx</code> to add your own photos.
+          Plug in real photos later. For now, these placeholders reserve space for party chaos, friendship shots, and that
+          infamous midnight deploy.
         </p>
       </header>
       <div className="grid gap-4 md:grid-cols-3">
-        {galleryImages.map((img, idx) => (
-          <Card key={img.id} className="card-elevated flex min-h-[240px] flex-col border-secondary/50 bg-black/30 overflow-hidden">
-            <div className="h-48 w-full overflow-hidden">
-              <img
-                src={img.url}
-                alt={img.label}
-                className="w-full h-full object-cover transition-transform hover:scale-110 duration-300"
-                loading="lazy"
-              />
-            </div>
+        {placeholderImages.map((slot, idx) => (
+          <Card key={slot.id} className="card-elevated flex min-h-[180px] flex-col border-secondary/50 bg-black/30">
             <CardHeader className="pb-2">
               <div className="flex items-center gap-2 text-secondary">
                 <ImageIcon className="h-4 w-4" />
-                <p className="text-[11px] uppercase tracking-[0.18em]">Photo {idx + 1}</p>
+                <p className="text-[11px] uppercase tracking-[0.18em]">Slot {idx + 1}</p>
               </div>
               <CardTitle className="mt-1 text-sm font-semibold text-foreground">
-                {img.label}
+                {slot.label}
               </CardTitle>
             </CardHeader>
             <CardContent className="flex flex-1 flex-col justify-between pb-4 text-xs text-muted-foreground">
-              <p className="mt-1 text-[11px] text-muted-foreground/80">
-                Memory captured for <span className="font-medium text-secondary">Chirag</span>&apos;s special day.
+              <p>
+                Reserved for a future JPG of pure chaos. Wire the URL in the config when youre ready.
+              </p>
+              <p className="mt-3 text-[11px] text-muted-foreground/80">
+                Single-user only · this gallery belongs to <span className="font-medium text-secondary">Chirag</span>.
               </p>
             </CardContent>
           </Card>
@@ -70,7 +64,7 @@ export const LogsPage = () => {
     {
       icon: <TerminalSquare className="h-4 w-4" />,
       title: "Accidental prod deploy",
-      body: "Still cant believe that time you accidentally deployed to prod and it worked??",
+      body: "Still cant believe that time you accidentally deployed to prod and it worked??",
     },
     {
       icon: <Sparkles className="h-4 w-4" />,
@@ -80,7 +74,7 @@ export const LogsPage = () => {
     {
       icon: <PartyPopper className="h-4 w-4" />,
       title: "Midnight deploy pact broken",
-      body: "We said no more midnight deploys and you still hit that button",
+      body: "We said no more midnight deploys and you still hit that button",
     },
   ];
 
@@ -89,7 +83,7 @@ export const LogsPage = () => {
       <header className="space-y-2">
         <p className="text-xs uppercase tracking-[0.18em] text-primary">Chaos logs · Insider jokes</p>
         <h1 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
-          Internal release notes for Chirags chaos engine
+          Internal release notes for Chirags chaos engine
         </h1>
         <p className="max-w-2xl text-sm text-muted-foreground">
           A dedicated feed for the moments that turned into lore. All jokes are baked-in, no user input or generic forms

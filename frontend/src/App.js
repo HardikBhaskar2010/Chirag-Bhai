@@ -5,6 +5,7 @@ import { Toaster, toast } from "@/components/ui/sonner";
 import { createMatrixBackground } from "@/components/birthday/MatrixBackground";
 import { LayoutShell } from "@/components/birthday/LayoutShell";
 import { HomePage, GalleryPage, LogsPage, AboutPage } from "@/components/birthday/Pages";
+import { CakeComponent } from "@/components/birthday/CakeComponent";
 
 const STORAGE_KEY = "chirag-birthday-settings-v1";
 
@@ -92,6 +93,7 @@ function App() {
   const [settings, setSettings] = useState(defaultSettings);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const [activePage, setActivePage] = useState("home");
+  const [showCake, setShowCake] = useState(false);
 
   useEffect(() => {
     setSettings(loadSettings());
@@ -149,6 +151,27 @@ function App() {
     triggerNativeConfetti();
   };
 
+  const handleShowCake = () => {
+    setShowCake(true);
+  };
+
+  const handleCakeTap = () => {
+    // Trigger confetti when cake is tapped
+    if (settings.confettiEnabled) {
+      triggerNativeConfetti();
+      // Trigger more confetti for extra celebration
+      setTimeout(() => triggerNativeConfetti(), 300);
+      setTimeout(() => triggerNativeConfetti(), 600);
+    }
+  };
+
+  const handleCakeAnimationComplete = () => {
+    // Hide cake after animation completes
+    setTimeout(() => {
+      setShowCake(false);
+    }, 1000);
+  };
+
   const handleShare = async () => {
     const message = "Happy Birthday, Chirag! 🎉 — open at: https://example.com/chirag";
     try {
@@ -201,6 +224,8 @@ function App() {
     prefersReducedMotion,
     onRevealEasterEgg: handleRevealEasterEgg,
     onNavigate: setActivePage,
+    showCake,
+    onShowCake: handleShowCake,
   };
 
   let pageElement = null;
@@ -230,6 +255,13 @@ function App() {
       <LayoutShell active={activePage} onNavigate={setActivePage}>
         {pageElement}
       </LayoutShell>
+
+      {/* Cake Component */}
+      <CakeComponent
+        isVisible={showCake}
+        onCakeTap={handleCakeTap}
+        onAnimationComplete={handleCakeAnimationComplete}
+      />
 
       <Toaster richColors theme="dark" />
     </div>
